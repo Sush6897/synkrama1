@@ -5,18 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 
+
 class DealerProfileController extends Controller
 {
     //
 
     public function index($id=""){
+        
         if(!empty($id)){
             $user = User::where('id', $id)->first();
         }else{
             $user = User::where('id', auth()->user()->id)->first();
  
         }
-        return view('profile', compact('user'));
+     
+        if(auth()->user()->id){
+            return view('profile', compact('user'));
+        }else{
+            return redirect()->route('login')->with('errors', 'you are not login');
+        }
+        
 
     }
 
@@ -31,8 +39,12 @@ class DealerProfileController extends Controller
             'state'=> $request->state,
             'zip_code' => $request->zip,
         ];
-        $create = User::where('id', auth()->user()->id)->update($data);
-        return redirect()->route('dealer.city_state_zip');
+        $create = User::where('id', $request->id)->update($data);
+        if(auth()->user()->user_type=='Dealer'){
+            return redirect()->route('dealer.city_state_zip')->with('success', "Record Update Successfully");
+        }else{
+            return redirect()->route('dealers.index')->with('success', "Record Update Successfully");
+        }
     }
 
     public function list(Request $request){
@@ -42,9 +54,14 @@ class DealerProfileController extends Controller
             $dealers = $dealers  ->where('zip_code', 'LIKE', "%$request->zip%");
         }
        
-       $dealers= $dealers ->get();
+       $dealers= $dealers->simplePaginate(1);
+       
+       if(!empty(auth()->user()->id)){
+            return view('index', compact('dealers'));
+        }else{
+            return redirect()->route('login')->with('mess', 'you are not login');
+        }
         
-        return view('index', compact('dealers'));
     }
   
 }

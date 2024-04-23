@@ -24,7 +24,7 @@ class RegisterationController extends Controller
             'user_type' => ['required', 'in:Employee,Dealer']
         ]);
         $user = User::create($request->all());
-        return redirect()->route('login');
+        return redirect()->route('login')->with('success', "Registeration Sucessfully You Can Login Now");
     }
 
     public function login(){
@@ -52,7 +52,7 @@ class RegisterationController extends Controller
         }
     
         // If authentication fails, redirect back with errors
-        return redirect()->back()->withErrors(['email' => 'Invalid email or password']);
+        return redirect()->back()->with(['mess' => 'Invalid password']);
      
     }
 
@@ -64,6 +64,21 @@ class RegisterationController extends Controller
 
     $request->session()->regenerateToken();
 
-    return redirect('/');
+    return redirect('/login')->with('success', 'you are logout');
 }
+
+public function checkEmail(Request $request){
+ 
+    $email = $request->input('email');
+    $user = User::where('email', $email)->first();
+
+    if ($user) {
+        // Email already exists
+        return response()->json(['exists' => true]);
+    } else {
+        // Email does not exist
+        return response()->json(['exists' => false]);
+    }
+}
+
 }

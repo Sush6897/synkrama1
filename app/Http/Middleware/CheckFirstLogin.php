@@ -14,12 +14,12 @@ class CheckFirstLogin
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::check() && Auth::user()->user_type == 'Dealer' ) {
-            return redirect()->route('dealer.city_state_zip');
+        if (!Auth::guard($guard)->check()) {
+            return redirect('/login')->with('success', 'you are not login'); // Change this to the default redirect route after login
         }
-
+    
         return $next($request);
     }
 }

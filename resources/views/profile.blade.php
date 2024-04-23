@@ -1,14 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+@extends('welcome')
 
-</head>
-<body>
+@section('content')
     <div class="container">
+    <div>
+            @if(Session::has("success"))
+                <div id="successMessage"  class="alert alert-success">
+                    <span>{{Session::get('success')}}</span>
+                </div>
+            @endif
+            @if(Session::has('mess'))
+                <div id="errorMessage"  class="alert alert-danger">
+                    <span>{{Session::get('mess')}}</span>
+                </div>
+            @endif
+        </div>
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
@@ -17,7 +22,8 @@
                     <div class="card-body">
                         <form method="POST" action="{{ route('dealer.update_city_state_zip') }}">
                             @csrf
-    
+                            <input  type="hidden" class="form-control " name="id" @if(empty($user)) value="{{ old('city') }}" @else value="{{ $user->id }}" @endif required autofocus>
+
                             <div class="form-group row">
                                 <label for="city" class="col-md-4 col-form-label text-md-right">{{ __('City') }}</label>
     
@@ -74,5 +80,4 @@
         </div>
     </div>
      
-</body>
-</html>
+    @endsection

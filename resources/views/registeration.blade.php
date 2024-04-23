@@ -1,14 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+@extends('welcome')
+
+@section('content')
     <div class="container">
+    <div>
+            @if(Session::has("success"))
+                <div id="successMessage"  class="alert alert-success">
+                    <span>{{Session::get('success')}}</span>
+                </div>
+            @endif
+            @if(Session::has('mess'))
+                <div id="errorMessage"  class="alert alert-danger">
+                    <span>{{Session::get('mess')}}</span>
+                </div>
+            @endif
+        </div>
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
@@ -24,10 +29,14 @@
                                 <div class="col-md-6">
                                     <input id="first_name" type="text" class="form-control" value="{{old('first_name')}}" name="first_name" required autofocus>
                                     <span id="first_name_error" class="text-danger"></span>
+
+                                    @error('first_name')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </div>
-                                @error('first_name')
-                                {{$message}}
-                                @enderror
+                             
                             </div>
 
                             <div class="form-group row">
@@ -38,7 +47,9 @@
                                     <span id="last_name_error" class="text-danger"></span>
                                 </div>
                                 @error('last_name')
-                                {{$message}}
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                    </span>
                                 @enderror
                             </div>
 
@@ -49,8 +60,10 @@
                                     <input id="email" type="email" class="form-control" name="email" value="{{old('email')}}" required>
                                     <span id="email_error" class="text-danger"></span>
                                 </div>
-                                @error('email')
-                                {{$message}}
+                                @error('error')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                    </span>
                                 @enderror
                             </div>
 
@@ -62,7 +75,9 @@
                                     <span id="password_error" class="text-danger"></span>
                                 </div>
                                 @error('password')
-                                {{$message}}
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                    </span>
                                 @enderror
                             </div>
 
@@ -75,10 +90,14 @@
                                         <option value="Dealer"  @if(old("user_type")=='Dealer') selected @endif>Dealer</option>
                                     </select>
                                     <span id="user_type_error" class="text-danger"></span>
-                                </div>
-                                @error('user_type')
-                                {{$message}}
+
+                                    @error('user_type')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                    </span>
                                 @enderror
+                                </div>
+                               
                             </div>
 
                             <div class="form-group row mb-0">
@@ -94,80 +113,114 @@
             </div>
         </div>
     </div>
-
-    <!-- Bootstrap JS and jQuery -->
+     <!-- Bootstrap JS and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- jQuery Validation Plugin -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+    <!-- Include jQuery Validation Plugin -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
-
-    <!-- jQuery Validation for Registration Form -->
+    
     <script>
         $(document).ready(function() {
-             // Custom validation method to check for full email address
-        $.validator.addMethod('fullEmail', function(value, element) {
-            return this.optional(element) || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-        }, 'Please enter a valid email address');
+            // Custom validation method to check for full email address
+            $.validator.addMethod('fullEmail', function(value, element) {
+                return this.optional(element) || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+            }, 'Please enter a valid email address');
 
-        $.validator.addMethod("lettersonly", function(value, element) {
-            return this.optional(element) || /^[a-zA-Z\s]*$/.test(value);
-        }, "Please enter only letters");
+            $.validator.addMethod("lettersonly", function(value, element) {
+                return this.optional(element) || /^[a-zA-Z\s]*$/.test(value);
+            }, "Please enter only letters");
 
-        $.validator.addMethod("strongPassword", function(value, element) {
-            return this.optional(element) || /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value);
-        }, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character");
+            $.validator.addMethod("strongPassword", function(value, element) {
+                return this.optional(element) || /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value);
+            }, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character");
 
-
-            $('#registrationForm').validate({
+          
+            $("#registrationForm").validate({
                 rules: {
                     first_name: {
-                        required :true,
-                        lettersonly : true,
+                        required: true,
+                        lettersonly: true,
                     },
-                    last_name:{
-                        required :true,
-                        lettersonly : true,
+                    last_name: {
+                        required: true,
+                        lettersonly: true,
                     },
                     email: {
                         required: true,
-                        fullEmail: true 
+                        fullEmail: true,
+                        remote: {
+                        url: "{{ route('check-email') }}",
+                        type: "post",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            email: function() {
+                                return $("#email").val();
+                            }
+                        },
+                        dataType: "json", // Ensure expected response type
+                        dataFilter: function(data) {
+                            // Parse the JSON response
+                            var json = JSON.parse(data);
+                            if (json.exists) {
+                                // Return false if email exists
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        }
+                    }
                     },
                     password: {
                         required: true,
-                        strongPassword: true // Use custom strong password validation method
-
+                        minlength: 8, // Ensure minimum length
+                        strongPassword: true,
                     },
                     user_type: 'required'
                 },
                 messages: {
-                    first_name:{
-                        required :'Please enter your first name',
+                    first_name: {
+                        required: 'Please enter your first name',
                         lettersonly: 'Please enter only letters'
-
                     },
-                    last_name:{
-                        required :'Please enter your first name',
+                    last_name: {
+                        required: 'Please enter your last name',
                         lettersonly: 'Please enter only letters'
-                    }, 
+                    },
                     email: {
                         required: 'Please enter your email',
-                        fullEmail: 'Please enter a valid email address'
+                        fullEmail: 'Please enter a valid email address',
+                        remote: 'This email is already taken. Please choose another.'
                     },
                     password: {
                         required: 'Please enter a password',
-                        strongPassword: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+                        minlength: 'Password must be at least 8 characters long',
+                        strongPassword: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
                     },
                     user_type: 'Please select user type'
                 },
+                errorElement: 'span', // Use 'span' for error messages
+                errorClass: 'text-danger', // Class for error messages
                 errorPlacement: function(error, element) {
-                    error.appendTo('#' + element.attr('id') + '_error');
+                    // Place error message after the input element
+                    error.insertAfter(element);
+                },
+                success: function(label) {
+                    // Handle success message if needed
+                },
+                highlight: function(element, errorClass, validClass) {
+                    // Add error class to the parent div for Bootstrap styling
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    // Remove error class from the parent div
+                    $(element).closest('.form-group').removeClass('has-error');
                 }
             });
-
-           
         });
+        
     </script>
-</body>
-</html>
+@endsection

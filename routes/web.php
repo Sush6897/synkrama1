@@ -21,13 +21,14 @@ Route::get('/', function () {
 
 Route::get('/register',[RegisterationController::class, 'index'])->name('register');
 Route::post('/regsiter',[RegisterationController::class, 'storeRegister']);
-Route::get('/login', [RegisterationController::class, 'login'])->name('login');
-Route::post('/login', [RegisterationController::class, 'storeLogin']);
+Route::get('/login', [RegisterationController::class, 'login'])->name('login')->middleware('guest');
+Route::post('/login', [RegisterationController::class, 'storeLogin'])->middleware('guest');
+Route::post('/check-email', [RegisterationController::class, 'checkEmail'])->name('check-email');
 
-Route::get('/dealer/profile/{id?}', [DealerProfileController::class, 'index'])->name('dealer.city_state_zip');
-Route::post('/dealer/profile', [DealerProfileController::class, 'update'])->name('dealer.update_city_state_zip');
+Route::get('/dealer/profile/{id?}', [DealerProfileController::class, 'index'])->name('dealer.city_state_zip')->middleware('check.first.login');
+Route::post('/dealer/profile', [DealerProfileController::class, 'update'])->name('dealer.update_city_state_zip')->middleware('check.first.login');
 
-Route::get('/dealers',[DealerProfileController::class, 'list'] )->name('dealers.index');
-Route::post('/dealers/search',[DealerProfileController::class, "search"])->name('dealers.search');
+Route::get('/dealers',[DealerProfileController::class, 'list'] )->name('dealers.index')->middleware('check.first.login');
+Route::post('/dealers/search',[DealerProfileController::class, "search"])->name('dealers.search')->middleware('check.first.login');
 
 Route::post('/logout', [RegisterationController::class, 'logout'])->name('logout');

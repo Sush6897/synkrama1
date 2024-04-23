@@ -21,7 +21,11 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                if(auth()->user()->user_type=='Dealer'){
+                    return redirect()->route('dealer.city_state_zip')->with('mess', 'you are already login');
+                }else{
+                    return redirect()->route('dealers.index')->with('mess', 'you are already login');
+                }
             }
         }
 

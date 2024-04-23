@@ -1,14 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+@extends('welcome')
+
+@section('content')
     <div class="container">
+        <div>
+            @if(Session::has("success"))
+                <div id="successMessage"  class="alert alert-success">
+                    <span>{{Session::get('success')}}</span>
+                </div>
+            @endif
+            @if(Session::has('mess'))
+                <div id="errorMessage"  class="alert alert-danger">
+                    <span>{{Session::get('mess')}}</span>
+                </div>
+            @endif
+        </div>
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
@@ -23,10 +28,13 @@
                                 <div class="col-md-6">
                                     <input id="email" type="email" class="form-control" name="email" value="{{old('email')}}" required>
                                     <span id="email_error" class="text-danger"></span>
+                                    @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
-                                @error('email')
-                                {{$message}}
-                                @enderror
+                               
                             </div>
 
                             <div class="form-group row">
@@ -35,10 +43,15 @@
                                 <div class="col-md-6">
                                     <input id="password" type="password" class="form-control" name="password" required autocomplete="new-password">
                                     <span id="password_error" class="text-danger"></span>
+                                    <br>
+                                    @error('password')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </div>
-                                @error('password')
-                                {{$message}}
-                                @enderror
+                                <br>
+                
                             </div>
 
                          
@@ -112,5 +125,4 @@
            
         });
     </script>
-</body>
-</html>
+@endsection

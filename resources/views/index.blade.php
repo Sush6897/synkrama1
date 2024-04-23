@@ -1,14 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container">
+@extends('welcome')
+
+@section('content')
+<div class="container mt-5">
+        <div>
+            @if(Session::has("success"))
+                <div id="successMessage"  class="alert alert-success">
+                    <span>{{Session::get('success')}}</span>
+                </div>
+            @endif
+            @if(Session::has('mess'))
+                <div id="errorMessage"  class="alert alert-danger">
+                    <span>{{Session::get('mess')}}</span>
+                </div>
+            @endif
+        </div>
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -16,15 +21,15 @@
 
                 <div class="card-body">
                     <div class="mb-3">
-                        <form action="{{ route('dealers.index') }}" method="POST">
+                        <form action="{{ route('dealers.index') }}" method="GET">
                             @csrf
                             <div class="form-row align-items-center">
                                 <div class="col-sm-6">
                                     <label for="zip" class="sr-only">ZIP Code</label>
-                                    <input type="text" class="form-control mb-2" id="zip" name="zip" placeholder="Enter ZIP Code">
+                                    <input type="text" class="form-control mb-2" id="zip" name="zip" required  value="{{request()->zip}}" placeholder="Enter ZIP Code">
                                 </div>
-                                <div class="col-auto">
-                                    <button type="submit" class="btn btn-primary mb-2">Search</button>
+                                <div class="col-sm-6">
+                                    <button type="submit" class="btn btn-secondary mb-2">Search</button>
                                     <a href='{{route("dealers.index")}}' class="btn btn-secondary mb-2">back</a>
 
                                 </div>
@@ -45,7 +50,7 @@
                         <tbody>
                             @foreach ($dealers as $dealer)
                                 <tr>
-                                    <td>  <a href='{{route("dealers.city_state_zip",["id"=>$dealer->id])}}' class="btn btn-warning mb-2">Edit</a>
+                                    <td>  <a href='{{route("dealer.city_state_zip",["id"=>$dealer->id])}}' class="btn btn-warning mb-2">Edit</a>
                                 </td>
                                     <td>{{ $dealer->first_name .' ' .$dealer->last_name }}</td>
                                     <td>{{ $dealer->city }}</td>
@@ -53,8 +58,18 @@
                                     <td>{{ $dealer->zip_code }}</td>
                                 </tr>
                             @endforeach
+                            
+                            
+
+
+
                         </tbody>
+                        
                     </table>
+                    <div>
+                            {{ $dealers->links() }}
+                                
+                            </div>
                 </div>
             </div>
         </div>
@@ -117,5 +132,4 @@
            
         });
     </script>
-</body>
-</html>
+@endsection
